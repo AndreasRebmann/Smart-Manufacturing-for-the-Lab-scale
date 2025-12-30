@@ -146,7 +146,9 @@ if __name__ == "__main__":
 
             i += 1
             time.sleep(1)
-    finally:
+    except KeyboardInterrupt:
+        pass
+	finally:
         server.stop()
         #write database to csv
         endTime = datetime.now(timezone.utc)
