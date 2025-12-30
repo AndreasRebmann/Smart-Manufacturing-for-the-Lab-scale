@@ -1,0 +1,45 @@
+void ReceiveDataPort1(void)
+  cstring mydata;			//variable for contents of port input
+  int port;
+  
+  port = 1;
+  //initialize mydata with data string
+  mydata = PortInput(port, 0, '\r', 500, 0);	//RS232 pgm port, no start char, carriage return end char
+  
+  /*
+  //PortInput(PORT, START, END, TIMEOUT, LENGTH)
+  ##Check in upper right on comms page to be sure of port!!
+  start and end are set to first and last character places as desired
+  timeout (msec) must be set to some non-zero value
+  length of string: 0 means default, which is a max of 256 including start and/or end chars; 
+  	the length can be set to some specific value, but note the function will not return 
+  	unless you have the specified number of characters in the buffer
+  	if you can have variable lengths you should use 0 and specify a start and/or end char
+  */						       
+  
+  //need to test for null string, and abort if it is null
+  if(mydata == "")
+  {
+  	return;//abort the program on null string return
+  }
+  else
+  {
+  	Scale1.ReceivedText = mydata;//get the function's returned data
+  }
+  // and continue with any other code needed to process the data
+  mydata := Strip(mydata,'?');
+  mydata := Strip(mydata,'g');
+  mydata := Strip(mydata,'+');
+  
+  
+  Scale1.Weight = TextToInt(mydata,10);
+--In Comms Ports Serial Port 1 - Raw Serial Port driver - Mode: Master On Update: ReceiveDataPort1() - Port Settings to match scale Baud Rate/Data Bits/Stop Bits/Parity
+void SendDataPort1(void)
+  /*
+  send commands to comm port
+  PortPrint(Port, "Text")
+  */
+  cstring myData;
+  myData = Scale1.SentText + "\r"+"\n" ;	// add carriage return end character
+  PortPrint(1, myData);	//send on rs232 port 1
+--For sending commands to scales based on their documentation
