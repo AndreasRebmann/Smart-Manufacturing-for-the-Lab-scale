@@ -33,7 +33,7 @@ def nodeSearch(client,targets,searchPath=None):
                     if nodeClass == NodeClass.Variable:
                         try:
                             nodeData["Val"] = node.get_value()
-                            nodeData["Type"] = str(node.get_data_type())
+                            nodeData["Type"] = node.get_data_type()
                         except Exception as e:
                             nodeData["Val"] = f"Error reading value: {str(e)}"
                     nodeList.append(nodeData)
@@ -66,7 +66,7 @@ def updateServerNodes(client,nodeMap,nodeVars,targList=None,searchPath=None,targ
         if update is None:
             print(f"Error: No nodes found matching key:{key} in server:{client.server_url}")
         else:
-            nodeVars[i].set_value(update["Val"])
+            nodeVars[i].set_value(update["Val"],nodeVars[i].get_data_type())
         update = None
         i += 1
 
@@ -88,7 +88,7 @@ def updateClientNodes(client,nodeMap,nodeVars,targList=None,searchPath=None,targ
         if update is None:
             print(f"Error: No nodes found matching key:{key} in server:{client.server_url}")
         else:
-            client.set_values([client.get_node(update["ID"])], [nodeVars[i]])
+            client.set_values([client.get_node(update["ID"])], [ua.DataValue(ua.Variant(nodeVars[i], update["Type"]))])
         update = None
         i += 1
     client.disconnect()
